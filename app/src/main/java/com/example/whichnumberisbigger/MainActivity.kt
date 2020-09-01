@@ -8,51 +8,30 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    private var score = 0
-    private var leftValue = 0
-    private var rightValue = 0
+    var game = BiggerNumberGame(0, 100)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        game()
+        game.randomNumberGenerator()
+        update()
     }
 
-    private fun game() {
-        leftValue = (Math.random() * 100 + 1).toInt()
-        rightValue = (Math.random() * 100 + 1).toInt()
-        while (leftValue == rightValue) {
-            rightValue = (Math.random() * 100 + 1).toInt()
-        }
-        button_main_left.setText(leftValue.toString())
-        button_main_right.setText(rightValue.toString())
-        textView_main_score.text = score.toString()
+    fun update() {
+        button_main_left.text = game.leftNumber.toString()
+        button_main_right.text = game.rightNumber.toString()
+        textView_main_score.text = game.score.toString()
     }
 
     fun onLeftClick(view: View) {
-        button_main_left.setText(leftValue.toString())
-        if (leftValue > rightValue) {
-            score++
-            Toast.makeText(this, "Correct! You're so smart!", Toast.LENGTH_SHORT).show()
-            game()
-        }
-        else {
-            score--
-            Toast.makeText(this, "Incorrect! Did you even pass kindergarten?", Toast.LENGTH_SHORT).show()
-            game()
-        }
+        textView_main_score.text = game.score.toString()
+        Toast.makeText(this, game.checkAnswer(button_main_left.text.toString().toInt()), Toast.LENGTH_SHORT).show()
+        update()
     }
 
     fun onRightClick(view: View) {
-        if (rightValue > leftValue) {
-            score++
-            Toast.makeText(this, "Correct! You're so smart!", Toast.LENGTH_SHORT).show()
-            game()
-        }
-        else {
-            score--
-            Toast.makeText(this, "Incorrect! Did you even pass kindergarten?", Toast.LENGTH_SHORT).show()
-            game()
-        }
+        Toast.makeText(this, game.checkAnswer(button_main_right.text.toString().toInt()), Toast.LENGTH_SHORT).show()
+        textView_main_score.text = game.score.toString()
+        update()
     }
 }
